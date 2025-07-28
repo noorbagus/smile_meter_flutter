@@ -8,6 +8,7 @@ import '../utils/image_converter.dart';
 class FaceDetectorService extends ChangeNotifier {
   FaceDetector? _faceDetector;
   bool _isInitialized = false;
+  CameraDescription? _cameraDescription;
 
   bool get isInitialized => _isInitialized;
 
@@ -26,10 +27,14 @@ class FaceDetectorService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<double?> processImage(CameraImage cameraImage) async {
-    if (!_isInitialized || _faceDetector == null) return null;
+  void setCameraDescription(CameraDescription cameraDescription) {
+    _cameraDescription = cameraDescription;
+  }
 
-    final inputImage = ImageConverter.convertCameraImage(cameraImage, camera);
+  Future<double?> processImage(CameraImage cameraImage) async {
+    if (!_isInitialized || _faceDetector == null || _cameraDescription == null) return null;
+
+    final inputImage = ImageConverter.convertCameraImage(cameraImage, _cameraDescription!);
     if (inputImage == null) return null;
 
     try {
@@ -50,44 +55,6 @@ class FaceDetectorService extends ChangeNotifier {
       print('Error processing face detection: $e');
       return null;
     }
-  }
-
-  InputImage? _convertCameraImageToInputImage(CameraImage cameraImage) {
-    final WriteBuffer allBytes = WriteBuffer();
-    for (final Plane plane in cameraImage.planes) {
-      allBytes.putUint8List(plane.bytes);
-    }
-    final bytes = allBytes.done().buffer.asUint8List();
-
-    final imageSize = Size(
-      cameraImage.width.toDouble(),
-      cameraImage.height.toDouble(),
-    );
-
-    final imageRotation = InputImageRotation.rotation0deg;
-    final inputImageFormat = InputImageFormat.nv21;
-
-    final planeData = cameraImage.planes.map(
-      (Plane plane) {
-        return InputImagePlaneMetadata(
-          bytesPerRow: plane.bytesPerRow,
-          height: cameraImage.height,
-          width: cameraImage.width,
-        );
-      },
-    ).toList();
-
-    final inputImageData = InputImageData(
-      size: imageSize,
-      imageRotation: imageRotation,
-      inputImageFormat: inputImageFormat,
-      planeData: planeData,
-    );
-
-    return InputImage.fromBytes(
-      bytes: bytes,
-      inputImageData: inputImageData,
-    );
   }
 
   @override

@@ -39,6 +39,11 @@ class _DetectionScreenState extends State<DetectionScreen> {
     await cameraService.initialize();
     await faceDetectorService.initialize();
     
+    // Set camera description for face detector
+    if (cameraService.cameraDescription != null) {
+      faceDetectorService.setCameraDescription(cameraService.cameraDescription!);
+    }
+    
     cameraService.imageStream.listen((image) {
       if (_isDetectionActive) {
         faceDetectorService.processImage(image).then((result) {

@@ -22,6 +22,10 @@ class CameraService extends ChangeNotifier {
 
     try {
       final cameras = await availableCameras();
+      if (cameras.isEmpty) {
+        throw Exception('No cameras available');
+      }
+
       final frontCamera = cameras.firstWhere(
         (camera) => camera.lensDirection == CameraLensDirection.front,
         orElse: () => cameras.first,
@@ -49,6 +53,7 @@ class CameraService extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print('Error initializing camera: $e');
+      rethrow;
     }
   }
 

@@ -1,21 +1,19 @@
 name: smile_meter_flutter
-description: Smile detection app with ML Kit.
+description: A Flutter app for smile detection with rewards
+
 publish_to: 'none'
+
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: '>=2.18.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  camera: ^0.10.5+2
-  google_ml_kit: ^0.14.0
+  camera: ^0.10.5
+  google_ml_kit: ^0.16.0
   provider: ^6.0.5
-  flutter_svg: ^2.0.7
-  cupertino_icons: ^1.0.2
-  path_provider: ^2.0.15
-  image: ^4.0.17
   qr_flutter: ^4.1.0
 
 dev_dependencies:
@@ -25,5 +23,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/images/

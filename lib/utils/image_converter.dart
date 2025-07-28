@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 
 class ImageConverter {
-  static InputImage? convertCameraImage(CameraImage image, CameraDescription camera) {
+  static InputImage? convertCameraImage(CameraImage image, CameraDescription cameraDescription) {
     try {
       final WriteBuffer allBytes = WriteBuffer();
       for (final Plane plane in image.planes) {
@@ -15,7 +15,7 @@ class ImageConverter {
 
       final imageFormat = InputImageFormatValue.fromRawValue(image.format.raw) ?? InputImageFormat.nv21;
 
-      final imageRotation = _getInputImageRotation(camera.sensorOrientation);
+      final imageRotation = _getInputImageRotation(cameraDescription.sensorOrientation);
 
       final planeData = image.planes.map(
         (Plane plane) {
