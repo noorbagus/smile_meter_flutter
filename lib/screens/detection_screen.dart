@@ -39,11 +39,6 @@ class _DetectionScreenState extends State<DetectionScreen> {
     await cameraService.initialize();
     await faceDetectorService.initialize();
     
-    // Set camera description for face detector
-    if (cameraService.cameraDescription != null) {
-      faceDetectorService.setCameraDescription(cameraService.cameraDescription!);
-    }
-    
     cameraService.imageStream.listen((image) {
       if (_isDetectionActive) {
         faceDetectorService.processImage(image).then((result) {
@@ -63,10 +58,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
     setState(() {
       _isDetectionActive = false;
       _isDetectionComplete = true;
-      // Simulate video URL creation - in a real app this would come from API
       _videoDownloadUrl = "https://example.com/videos/smile_${DateTime.now().millisecondsSinceEpoch}";
     });
-    // Here you would handle the result, such as determining reward category
     String rewardCategory = _getRewardCategory(_smileValue);
     print('Detection complete! Smile value: $_smileValue, Category: $rewardCategory');
   }
