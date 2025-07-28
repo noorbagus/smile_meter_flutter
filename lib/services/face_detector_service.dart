@@ -8,7 +8,7 @@ import '../utils/image_converter.dart';
 class FaceDetectorService extends ChangeNotifier {
   FaceDetector? _faceDetector;
   bool _isInitialized = false;
-  CameraDescription? _cameraDescription;
+  CameraDescription? _camera;
 
   bool get isInitialized => _isInitialized;
 
@@ -23,18 +23,21 @@ class FaceDetectorService extends ChangeNotifier {
       ),
     );
 
+    // Get camera for image conversion
+    final cameras = await availableCameras();
+    _camera = cameras.firstWhere(
+      (camera) => camera.lensDirection == CameraLensDirection.front,
+      orElse: () => cameras.first,
+    );
+
     _isInitialized = true;
     notifyListeners();
   }
 
-  void setCameraDescription(CameraDescription cameraDescription) {
-    _cameraDescription = cameraDescription;
-  }
-
   Future<double?> processImage(CameraImage cameraImage) async {
-    if (!_isInitialized || _faceDetector == null || _cameraDescription == null) return null;
+    if (!_isInitialized || _faceDetector == null || _camera == null) return null;
 
-    final inputImage = ImageConverter.convertCameraImage(cameraImage, _cameraDescription!);
+    final inputImage = ImageConverter.convertCameraImage(cameraImage, _camera!);
     if (inputImage == null) return null;
 
     try {
